@@ -12,7 +12,7 @@ import sistema.modelos.Professor;
 
 public class ProfessorService {
 
-	private EntityManagerFactory emf;
+	private static EntityManagerFactory emf;
 	
 	public ProfessorService()
 	{
@@ -34,8 +34,7 @@ public class ProfessorService {
 	@SuppressWarnings("unchecked")
 	public List <Professor> getProfessores()
 	{
-		
-		List <Professor >professores;
+		List <Professor>professores;
 		
 		EntityManager em = emf.createEntityManager();
 		Query q = em.createQuery("Select a From Professor a");
@@ -43,8 +42,25 @@ public class ProfessorService {
 		em.close();
 		
 		return professores;
-		
 	}
+
+	public void alterar(Professor professor) {
+
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();	
+		professor = em.merge(professor);
+		em.getTransaction().commit();	
+	    em.close();
+	}
+
 	
-	
+	public void remover(Professor professor) {
+
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();	
+		professor = em.find(Professor.class,professor.getMatricula());
+			em.remove(professor);
+		em.getTransaction().commit();	
+	    em.close();
+	}
 }
